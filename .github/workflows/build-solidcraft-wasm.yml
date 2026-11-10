@@ -17,6 +17,7 @@ jobs:
       - name: Checkout selected SolidCraft version
         uses: actions/checkout@v4
         with:
+          repository: tangency-labs/solidcraft
           ref: ${{ inputs.version }}
 
       - name: Install Rust and WASM target
