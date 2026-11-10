@@ -1,0 +1,52 @@
+name: Build SolidCraft WASM
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "SolidCraft version/tag to build"
+        required: true
+        default: "v0.40.0-rc.3"
+        type: string
+
+jobs:
+  build-web:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout selected SolidCraft version
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version }}
+
+      - name: Install Rust and WASM target
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install Trunk
+        uses: taiki-e/install-action@v2
+        with:
+          tool: trunk
+
+      - name: Show tool versions
+        run: |
+          rustc --version
+          cargo --version
+          trunk --version
+
+      - name: Build SolidCraft Web
+        working-directory: apps/solidcraft-web
+        run: |
+          trunk build --release --public-url ./
+
+      - name: Show generated files
+        run: |
+          find apps/solidcraft-web/dist -type f
+
+      - name: Upload WASM web build
+        uses: actions/upload-artifact@v4
+        with:
+          name: solidcraft-${{ inputs.version }}-web
+          path: apps/solidcraft-web/dist/
+          if-no-files-found: error
