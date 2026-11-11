@@ -25,6 +25,11 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
 
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ". -&gt; target"
+
       - name: Install Trunk
         uses: taiki-e/install-action@v2
         with:
