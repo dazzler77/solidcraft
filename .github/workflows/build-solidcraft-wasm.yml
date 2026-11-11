@@ -41,13 +41,17 @@ jobs:
         run: |
           trunk build --release --public-url ./
 
-      - name: Show generated files
+      - name: Find generated WASM web build
         run: |
-          find apps/solidcraft-web/dist -type f
+          echo "Looking for generated WASM files..."
+          find . -type f \( -name "*.wasm" -o -name "index.html" \) -print
+          echo ""
+          echo "Possible build directories:"
+          find . -type d \( -name "dist" -o -name "web" -o -name "public" \) -print
 
-      - name: Upload WASM web build
-        uses: actions/upload-artifact@v4
-        with:
-          name: solidcraft-${{ inputs.version }}-web
-          path: apps/solidcraft-web/dist/
-          if-no-files-found: error
+#      - name: Upload WASM web build
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: solidcraft-${{ inputs.version }}-web
+#          path: apps/solidcraft-web/dist/
+#          if-no-files-found: error
